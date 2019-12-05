@@ -1,0 +1,156 @@
+{
+	"dc=example,dc=org": {},
+	"cn=admin,dc=example,dc=org": {
+		"userpassword": "admin"
+	},
+
+	"ou=users,dc=example,dc=org": {},
+	"cn=albert,ou=users,dc=example,dc=org": {
+		"objectclass": ["inetOrgPerson", "person", "posixAccount"],
+		"uid": "albert",
+		"userpassword": "relativity",
+		"mail": "einstein@example.org",
+		"mailadditional": ["albert@example.org", "ae@example.org"],
+		"cn": "albert",
+		"sn": "Einstein",
+		"givenname": "Albert",
+		"displayname": "Prof. Albert Einstein",
+		"uuid": "{hex}e7cc3c2e498b429db5193ea330afc61d",
+		"entryuuid": "e7cc3c2e-498b-429d-b519-3ea330afc61d",
+		"objectguid": "{hex}e7cc3c2e498b429db5193ea330afc61d",
+		"customuid": "e7cc3c2e",
+		"uidnumber": 10001,
+		"gidnumber": 20001,
+		"nameid": "einstein@example.org",
+		"memberof": [
+			"cn=sailing-lovers,ou=groups,dc=example,dc=org",
+			"cn=violin-haters,ou=groups,dc=example,dc=org",
+			"cn=physics-lovers,ou=groups,dc=example,dc=org"
+		],
+		"homedirectory": "/home/albert"
+	},
+	"cn=marie,ou=users,dc=example,dc=org": {
+		"objectclass": ["inetOrgPerson", "person", "posixAccount"],
+		"uid": "marie",
+		"userpassword": "relativity",
+		"mail": "curie@example.org",
+		"cn": "marie",
+		"sn": "Curie",
+		"givenname": "Marie",
+		"displayname": "Prof. Marie Curie",
+		"mailadditional": ["marie@example.org", "mc@example.org"],
+		"uuid": "{hex}c708f6df5d344ba49333a57e44eefc2d",
+		"entryuuid": "c708f6df-5d34-4ba4-9333-a57e44eefc2d",
+		"objectguid": "{hex}c708f6df5d344ba49333a57e44eefc2d",
+		"customuid": "c708f6df",
+		"uidnumber": 10002,
+		"gidnumber": 20001,
+		"nameid": "curie@example.org",
+		"memberof": [
+			"cn=radium-lovers,ou=groups,dc=example,dc=org",
+			"cn=polonium-lovers,ou=groups,dc=example,dc=org",
+			"cn=physics-lovers,ou=groups,dc=example,dc=org"
+		],
+		"homedirectory": "/home/marie"
+	},
+	"cn=richard,ou=users,dc=example,dc=org": {
+		"objectclass": ["inetOrgPerson", "person", "posixAccount"],
+		"uid": "richard",
+		"userpassword": "relativity",
+		"mail": "feynman@example.org",
+		"cn": "richard",
+		"sn": "Feynman",
+		"givenname": "Richard",
+		"displayname": "Prof. Richard Feynman",
+		"mailadditional": ["richard@example.org", "rf@example.org"],
+		"uuid": "{hex}f708f6df5d344ba49333a57e44eefc2d",
+		"entryuuid": "f708f6df-5d34-4ba4-9333-a57e44eefc2d",
+		"objectguid": "{hex}f708f6df5d344ba49333a57e44eefc2d",
+		"customuid": "f708f6df",
+		"uidnumber": 10003,
+		"gidnumber": 20001,
+		"nameid": "feynman@example.org",
+		"memberof": [
+			"cn=quantum-lovers,ou=groups,dc=example,dc=org",
+			"cn=philosophy-haters,ou=groups,dc=example,dc=org",
+			"cn=physics-lovers,ou=groups,dc=example,dc=org"
+		],
+		"homedirectory": "/home/richard"
+	},
+
+	"ou=groups,dc=example,dc=org": {},
+	"cn=physics-lovers,ou=groups,dc=example,dc=org": {
+		"objectclass": ["group", "posixGroup"],
+		"cn": "physics-lovers",
+		"entryuuid": "d0d576eb-f7ac-45e2-8e69-a2a1e079556b",
+		"uuid": "{hex}d0d576ebf7ac45e28e69a2a1e079556b",
+		"objectguid": "{hex}d0d576ebf7ac45e28e69a2a1e079556b",
+		"customuid": "d0d576eb",
+		"gidnumber": 20001,
+		"uniquemember": [
+			"cn=albert,ou=users,dc=example,dc=org",
+			"cn=marie,ou=users,dc=example,dc=org",
+			"cn=richard,ou=users,dc=example,dc=org"
+		]
+	},
+	"cn=sailing-lovers,ou=groups,dc=example,dc=org": {
+		"objectclass": ["group", "posixGroup"],
+		"cn": "sailing-lovers",
+		"entryuuid": "51099587-0d74-4568-8268-c7ba70359ff2",
+		"uuid": "{hex}510995870d7445688268c7ba70359ff2",
+		"objectguid": "{hex}510995870d7445688268c7ba70359ff2",
+		"customuid": "51099587",
+		"gidnumber": 20002,
+		"uniquemember": ["cn=albert,ou=users,dc=example,dc=org"]
+	},
+	"cn=violin-haters,ou=groups,dc=example,dc=org": {
+		"objectclass": ["group", "posixGroup"],
+		"cn": "violin-haters",
+		"entryuuid": "7045c18b-0f68-448f-bb15-498c19ffab9a",
+		"uuid": "{hex}7045c18b0f68448fbb15498c19ffab9a",
+		"objectguid": "{hex}7045c18b0f68448fbb15498c19ffab9a",
+		"customuid": "7045c18b",
+		"gidnumber": 20003,
+		"uniquemember": ["cn=albert,ou=users,dc=example,dc=org"]
+	},
+	"cn=radium-lovers,ou=groups,dc=example,dc=org": {
+		"objectclass": ["group", "posixGroup"],
+		"cn": "radium-lovers",
+		"entryuuid": "f8c935fd-891b-4bf2-aa19-fca58c858d0b",
+		"uuid": "{hex}f8c935fd891b4bf2aa19fca58c858d0b",
+		"objectguid": "{hex}f8c935fd891b4bf2aa19fca58c858d0b",
+		"customuid": "f8c935fd",
+		"gidnumber": 20004,
+		"uniquemember": ["cn=marie,ou=users,dc=example,dc=org"]
+    },
+	"cn=polonium-lovers,ou=groups,dc=example,dc=org": {
+		"objectclass": ["group", "posixGroup"],
+		"cn": "polonium-lovers",
+		"entryuuid": "10053782-a841-48a3-8897-acab993dabdd",
+		"uuid": "{hex}10053782a84148a38897acab993dabdd",
+		"objectguid": "{hex}10053782a84148a38897acab993dabdd",
+		"customuid": "10053782",
+		"gidnumber": 20005,
+		"uniquemember": ["cn=marie,ou=users,dc=example,dc=org"]
+    },
+	"cn=quantum-lovers,ou=groups,dc=example,dc=org": {
+		"objectclass": ["group", "posixGroup"],
+		"cn": "quantum-lovers",
+		"entryuuid": "748a0aa1-5ac7-4336-8f7f-ae611d27d41f",
+		"uuid": "{hex}748a0aa15ac743368f7fae611d27d41f",
+		"objectguid": "{hex}748a0aa15ac743368f7fae611d27d41f",
+		"customuid": "748a0aa1",
+		"gidnumber": 20006,
+		"uniquemember": ["cn=richard,ou=users,dc=example,dc=org"]
+    },
+	"cn=philosophy-haters,ou=groups,dc=example,dc=org": {
+		"objectclass": ["group", "posixGroup"],
+		"cn": "philosophy-haters",
+		"entryuuid": "d05e8fdb-3e2f-4f81-bb1e-1ee6240f8d38",
+		"uuid": "{hex}d05e8fdb3e2f4f81bb1e1ee6240f8d38",
+		"objectguid": "{hex}d05e8fdb3e2f4f81bb1e1ee6240f8d38",
+		"customuid": "d05e8fdb",
+		"gidnumber": 20007,
+		"uniquemember": ["cn=richard,ou=users,dc=example,dc=org"]
+    }
+}
