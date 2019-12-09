@@ -30,6 +30,11 @@ type Tracing struct {
 	Service   string
 }
 
+// Asset defines the available asset configuration.
+type Asset struct {
+	Path string
+}
+
 // Config combines all available configuration parts.
 type Config struct {
 	File    string
@@ -37,6 +42,7 @@ type Config struct {
 	Debug   Debug
 	LDAP    LDAP
 	Tracing Tracing
+	Asset   Asset
 }
 
 // New initializes a new configuration with or without defaults.
