@@ -1,6 +1,6 @@
 baseURL = "https://owncloud.github.io/ocis-devldap/"
 languageCode = "en-us"
-title = "ownCloud Infinite Scale: devldap"
+title = "ownCloud Infinite Scale: DevLDAP"
 pygmentsUseClasses = true
 
 disableKinds = ["taxonomy", "taxonomyTerm", "RSS", "sitemap"]

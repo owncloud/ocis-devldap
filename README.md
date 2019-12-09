@@ -1,8 +1,8 @@
-# ownCloud Infinite Scale: Devldap
+# ownCloud Infinite Scale: DevLDAP
 
 [![Build Status](https://cloud.drone.io/api/badges/owncloud/ocis-devldap/status.svg)](https://cloud.drone.io/owncloud/ocis-devldap)
 [![Gitter chat](https://badges.gitter.im/cs3org/reva.svg)](https://gitter.im/cs3org/reva)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6f1eaaa399294d959ef7b3b10deed41d)](https://www.codacy.com/manual/owncloud/ocis-devldap?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=owncloud/ocis-devldap&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/afbd4455ca1a4833966fb69edec87cdb)](https://www.codacy.com/manual/owncloud/ocis-devldap?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=owncloud/ocis-devldap&amp;utm_campaign=Badge_Grade)
 [![Go Doc](https://godoc.org/github.com/owncloud/ocis-devldap?status.svg)](http://godoc.org/github.com/owncloud/ocis-devldap)
 [![Go Report](http://goreportcard.com/badge/github.com/owncloud/ocis-devldap)](http://goreportcard.com/report/github.com/owncloud/ocis-devldap)
 [![](https://images.microbadger.com/badges/image/owncloud/ocis-devldap.svg)](http://microbadger.com/images/owncloud/ocis-devldap "Get your own image badge on microbadger.com")
@@ -11,7 +11,7 @@
 
 ## Install
 
-You can download prebuilt binaries from the GitHub releases or from our [download mirrors](http://download.owncloud.com/ocis/devldap/). For instructions how to install this on your platform you should take a look at our [documentation](https://owncloud.github.cio/ocis-devldap/)
+You can download prebuilt binaries from the GitHub releases or from our [download mirrors](http://download.owncloud.com/ocis/devldap/). For instructions how to install this on your platform you should take a look at our [documentation](https://owncloud.github.io/ocis-devldap/)
 
 ## Development
 
@@ -20,9 +20,6 @@ Make sure you have a working Go environment, for further reference or a guide ta
 ```console
 git clone https://github.com/owncloud/ocis-devldap.git
 cd ocis-devldap
-
-yarn install
-yarn build
 
 make generate build
 

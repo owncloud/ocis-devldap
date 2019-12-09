@@ -6,13 +6,21 @@ DIST := dist
 
 ifeq ($(OS), Windows_NT)
 	EXECUTABLE := $(NAME).exe
+	UNAME := Windows
 else
 	EXECUTABLE := $(NAME)
+	UNAME := $(shell uname -s)
+endif
+
+ifeq ($(UNAME), Darwin)
+	GOBUILD ?= go build -i
+else
+	GOBUILD ?= go build
 endif
 
 PACKAGES ?= $(shell go list ./...)
 SOURCES ?= $(shell find . -name "*.go" -type f -not -path "./node_modules/*")
-GENERATE ?= $(IMPORT)/pkg/assets
+GENERATE ?= $(PACKAGES)
 
 TAGS ?=
 
@@ -49,7 +57,7 @@ sync:
 .PHONY: clean
 clean:
 	go clean -i ./...
-	rm -rf $(BIN) $(DIST) pkg/assets/embed.go
+	rm -rf $(BIN) $(DIST)
 
 .PHONY: fmt
 fmt:
@@ -87,10 +95,10 @@ install: $(SOURCES)
 build: $(BIN)/$(EXECUTABLE) $(BIN)/$(EXECUTABLE)-debug
 
 $(BIN)/$(EXECUTABLE): $(SOURCES)
-	go build -i -v -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -o $@ ./cmd/$(NAME)
+	$(GOBUILD) -v -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -o $@ ./cmd/$(NAME)
 
 $(BIN)/$(EXECUTABLE)-debug: $(SOURCES)
-	go build -v -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -gcflags '$(GCFLAGS)' -o $@ ./cmd/$(NAME)
+	$(GOBUILD) -v -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -gcflags '$(GCFLAGS)' -o $@ ./cmd/$(NAME)
 
 .PHONY: release
 release: release-dirs release-linux release-windows release-darwin release-copy release-check
@@ -129,3 +137,42 @@ docs:
 .PHONY: watch
 watch:
 	go run github.com/cespare/reflex -c reflex.conf
+
+# $(GOPATH)/bin/protoc-gen-go:
+# 	GO111MODULE=off go get -v github.com/golang/protobuf/protoc-gen-go
+
+# $(GOPATH)/bin/protoc-gen-micro:
+# 	GO111MODULE=off go get -v github.com/micro/protoc-gen-micro
+
+# $(GOPATH)/bin/protoc-gen-microweb:
+# 	GO111MODULE=off go get -v github.com/webhippie/protoc-gen-microweb
+
+# $(GOPATH)/bin/protoc-gen-swagger:
+# 	GO111MODULE=off go get -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+
+# pkg/proto/v0/example.pb.go: pkg/proto/v0/example.proto
+# 	protoc \
+# 		-I=third_party/ \
+# 		-I=pkg/proto/v0/ \
+# 		--go_out=logtostderr=true:pkg/proto/v0 example.proto
+
+# pkg/proto/v0/example.pb.micro.go: pkg/proto/v0/example.proto
+# 	protoc \
+# 		-I=third_party/ \
+# 		-I=pkg/proto/v0/ \
+# 		--micro_out=logtostderr=true:pkg/proto/v0 example.proto
+
+# pkg/proto/v0/example.pb.web.go: pkg/proto/v0/example.proto
+# 	protoc \
+# 		-I=third_party/ \
+# 		-I=pkg/proto/v0/ \
+# 		--microweb_out=logtostderr=true:pkg/proto/v0 example.proto
+
+# pkg/proto/v0/example.swagger.json: pkg/proto/v0/example.proto
+# 	protoc \
+# 		-I=third_party/ \
+# 		-I=pkg/proto/v0/ \
+# 		--swagger_out=logtostderr=true:pkg/proto/v0 example.proto
+
+# .PHONY: protobuf
+# protobuf:  $(GOPATH)/bin/protoc-gen-go $(GOPATH)/bin/protoc-gen-micro $(GOPATH)/bin/protoc-gen-microweb $(GOPATH)/bin/protoc-gen-swagger pkg/proto/v0/example.pb.go pkg/proto/v0/example.pb.micro.go pkg/proto/v0/example.pb.web.go pkg/proto/v0/example.swagger.json

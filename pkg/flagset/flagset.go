@@ -22,6 +22,18 @@ func RootWithConfig(cfg *config.Config) []cli.Flag {
 			EnvVar:      "DEVLDAP_LOG_LEVEL",
 			Destination: &cfg.Log.Level,
 		},
+		&cli.BoolTFlag{
+			Name:        "log-pretty",
+			Usage:       "Enable pretty logging",
+			EnvVar:      "DEVLDAP_LOG_PRETTY",
+			Destination: &cfg.Log.Pretty,
+		},
+		&cli.BoolTFlag{
+			Name:        "log-color",
+			Usage:       "Enable colored logging",
+			EnvVar:      "DEVLDAP_LOG_COLOR",
+			Destination: &cfg.Log.Color,
+		},
 	}
 }
 
@@ -30,7 +42,7 @@ func HealthWithConfig(cfg *config.Config) []cli.Flag {
 	return []cli.Flag{
 		&cli.StringFlag{
 			Name:        "debug-addr",
-			Value:       "0.0.0.0:8390",
+			Value:       "0.0.0.0:9129",
 			Usage:       "Address to debug endpoint",
 			EnvVar:      "DEVLDAP_DEBUG_ADDR",
 			Destination: &cfg.Debug.Addr,
@@ -77,7 +89,7 @@ func ServerWithConfig(cfg *config.Config) []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:        "debug-addr",
-			Value:       "0.0.0.0:8390",
+			Value:       "0.0.0.0:9129",
 			Usage:       "Address to bind debug server",
 			EnvVar:      "DEVLDAP_DEBUG_ADDR",
 			Destination: &cfg.Debug.Addr,
@@ -103,24 +115,17 @@ func ServerWithConfig(cfg *config.Config) []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:        "ldap-addr",
-			Value:       "0.0.0.0:10389",
+			Value:       "0.0.0.0:9125",
 			Usage:       "Address to bind ldap server",
-			EnvVar:      "DEVLDAP_LDAP_ADDR",
+			EnvVar:      "DEVLDAP_HTTP_ADDR",
 			Destination: &cfg.LDAP.Addr,
 		},
 		&cli.StringFlag{
-			Name:        "data-file",
-			Value:       "data.json",
-			Usage:       "Path to ldap data file",
-			EnvVar:      "DEVLDAP_DATA_FILE",
-			Destination: &cfg.LDAP.Data,
-		},
-		&cli.StringFlag{
-			Name:        "asset-path",
+			Name:        "ldap-data",
 			Value:       "",
-			Usage:       "Path to custom assets",
-			EnvVar:      "DEVLDAP_ASSET_PATH",
-			Destination: &cfg.Asset.Path,
+			Usage:       "Path to ldap data file",
+			EnvVar:      "DEVLDAP_LDAP_DATA",
+			Destination: &cfg.LDAP.Data,
 		},
 	}
 }
