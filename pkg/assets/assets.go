@@ -1,57 +1,54 @@
 package assets
 
 import (
-	"net/http"
+	"io/ioutil"
 	"os"
-	"path"
 
-	"github.com/micro/go-micro/util/log"
-	"github.com/owncloud/ocis-devldap/pkg/config"
+	"github.com/owncloud/ocis-phoenix/pkg/config"
+	"github.com/owncloud/ocis-pkg/log"
 )
 
 //go:generate go run github.com/UnnoTed/fileb0x embed.yml
 
 // assets gets initialized by New and provides the handler.
 type assets struct {
+	logger log.Logger
 	config *config.Config
 }
 
-// Open just implements the HTTP filesystem interface.
-func (a assets) Open(original string) (http.File, error) {
-	if a.config.Asset.Path != "" {
-		if stat, err := os.Stat(a.config.Asset.Path); err == nil && stat.IsDir() {
-			custom := path.Join(
-				a.config.Asset.Path,
-				original,
-			)
+// Data simply provides ldap server data file.
+func (a assets) Data() ([]byte, error) {
+	if a.config.LDAP.Data != "" {
+		if _, err := os.Stat(a.config.LDAP.Data); os.IsNotExist(err) {
+			a.logger.Error().
+				Str("path", a.config.LDAP.Data).
+				Msg("Data file doesn't exist")
 
-			if _, err := os.Stat(custom); !os.IsNotExist(err) {
-				f, err := os.Open(custom)
-
-				if err != nil {
-					return nil, err
-				}
-
-				return f, nil
-			}
-		} else {
-			log.Warnf("Asset directory [%s] doesn't exist", a.config.Asset.Path)
+			return []byte(), err
 		}
+
+		content, err := ioutil.ReadFile(a.config.LDAP.Data)
+
+		if err != nil {
+			a.logger.Error().
+				Str("path", a.config.LDAP.Data).
+				Msg("Failed to read data file")
+
+			return []byte(), err
+		}
+
+		return content, nil
 	}
 
-	return FS.OpenFile(
-		CTX,
-		original,
-		os.O_RDONLY,
-		0644,
-	)
+	return ReadFile("data.json")
 }
 
-// New returns a new http filesystem to serve assets.
-func New(opts ...Option) http.FileSystem {
+// New returns a new handler to serve assets.
+func New(opts ...Option) assets {
 	options := newOptions(opts...)
 
 	return assets{
+		logger: options.Logger,
 		config: options.Config,
 	}
 }

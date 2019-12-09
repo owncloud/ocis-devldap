@@ -5,4 +5,4 @@ anchor: "about"
 weight: 10
 ---
 
-This service provides a simple devldap example API to show the integration of custom plugins within [Phoenix](https://github.com/owncloud/phoenix).
+This service provides a simple LDAP server which should only be used for development setups, this extension is not meant to be deployed to production environments.
