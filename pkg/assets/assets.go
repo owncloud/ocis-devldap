@@ -1,10 +1,11 @@
 package assets
 
 import (
-	"io/ioutil"
+	"net/http"
 	"os"
+	"path"
 
-	"github.com/owncloud/ocis-phoenix/pkg/config"
+	"github.com/owncloud/ocis-devldap/pkg/config"
 	"github.com/owncloud/ocis-pkg/log"
 )
 
@@ -16,35 +17,41 @@ type assets struct {
 	config *config.Config
 }
 
-// Data simply provides ldap server data file.
-func (a assets) Data() ([]byte, error) {
-	if a.config.LDAP.Data != "" {
-		if _, err := os.Stat(a.config.LDAP.Data); os.IsNotExist(err) {
-			a.logger.Error().
-				Str("path", a.config.LDAP.Data).
-				Msg("Data file doesn't exist")
+// Open just implements the HTTP filesystem interface.
+func (a assets) Open(original string) (http.File, error) {
+	if a.config.Asset.Path != "" {
+		if stat, err := os.Stat(a.config.Asset.Path); err == nil && stat.IsDir() {
+			custom := path.Join(
+				a.config.Asset.Path,
+				original,
+			)
 
-			return []byte(), err
+			if _, err := os.Stat(custom); !os.IsNotExist(err) {
+				f, err := os.Open(custom)
+
+				if err != nil {
+					return nil, err
+				}
+
+				return f, nil
+			}
+		} else {
+			a.logger.Warn().
+				Str("path", a.config.Asset.Path).
+				Msg("Assets directory doesn't exist")
 		}
-
-		content, err := ioutil.ReadFile(a.config.LDAP.Data)
-
-		if err != nil {
-			a.logger.Error().
-				Str("path", a.config.LDAP.Data).
-				Msg("Failed to read data file")
-
-			return []byte(), err
-		}
-
-		return content, nil
 	}
 
-	return ReadFile("data.json")
+	return FS.OpenFile(
+		CTX,
+		original,
+		os.O_RDONLY,
+		0644,
+	)
 }
 
-// New returns a new handler to serve assets.
-func New(opts ...Option) assets {
+// New returns a new http filesystem to serve assets.
+func New(opts ...Option) http.FileSystem {
 	options := newOptions(opts...)
 
 	return assets{

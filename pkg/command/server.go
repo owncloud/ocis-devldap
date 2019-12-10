@@ -15,7 +15,6 @@ import (
 	zipkinhttp "github.com/openzipkin/zipkin-go/reporter/http"
 	"github.com/owncloud/ocis-devldap/pkg/config"
 	"github.com/owncloud/ocis-devldap/pkg/flagset"
-	"github.com/owncloud/ocis-devldap/pkg/metrics"
 	"github.com/owncloud/ocis-devldap/pkg/server/debug"
 	"github.com/owncloud/ocis-devldap/pkg/server/ldap"
 	"go.opencensus.io/stats/view"
@@ -118,7 +117,7 @@ func Server(cfg *config.Config) cli.Command {
 			var (
 				gr          = run.Group{}
 				ctx, cancel = context.WithCancel(context.Background())
-				metrics     = metrics.New()
+				//metrics     = metrics.New()
 			)
 
 			defer cancel()
@@ -140,14 +139,17 @@ func Server(cfg *config.Config) cli.Command {
 				}
 
 				gr.Add(func() error {
-					return server.ListenAndServe(cfg.LDAP.Addr)
+					return server.ListenAndServe()
 				}, func(_ error) {
+					ctx, timeout := context.WithTimeout(ctx, 5*time.Second)
+					defer timeout()
+					defer cancel()
+
 					logger.Info().
 						Str("transport", "ldap").
 						Msg("Shutting down server")
 
-					server.Stop()
-					cancel()
+					server.Shutdown(ctx)
 				})
 			}
 

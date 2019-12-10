@@ -122,7 +122,7 @@ func ServerWithConfig(cfg *config.Config) []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:        "ldap-data",
-			Value:       "",
+			Value:       "data.json",
 			Usage:       "Path to ldap data file",
 			EnvVar:      "DEVLDAP_LDAP_DATA",
 			Destination: &cfg.LDAP.Data,

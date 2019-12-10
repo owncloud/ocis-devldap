@@ -6,42 +6,48 @@ import (
 	"strings"
 
 	"github.com/Jeffail/gabs"
-	ls "github.com/butonic/ldapserver"
+	"github.com/butonic/ldapserver/pkg/constants"
+	"github.com/butonic/ldapserver/pkg/ldap"
 	"github.com/lor00x/goldap/message"
 	"github.com/micro/go-micro/util/log"
 )
 
+// Handler implements the handlers for LDAP Requests
 type Handler struct {
 	data *gabs.Container
 }
 
-func (h *Handler) NotFound(w ls.ResponseWriter, r *ls.Message) {
+// NotFound returns success for a bind request, unwilling to perform otherwise
+func (h *Handler) NotFound(w ldap.ResponseWriter, r *ldap.Request) {
 	switch r.ProtocolOpType() {
-	case ls.ApplicationBindRequest:
-		res := ls.NewBindResponse(ls.LDAPResultSuccess)
+	case constants.ApplicationBindRequest:
+		res := ldap.NewBindResponse(constants.LDAPResultSuccess)
 		res.SetDiagnosticMessage("Default binding behavior set to return Success")
 
 		w.Write(res)
 
 	default:
-		res := ls.NewResponse(ls.LDAPResultUnwillingToPerform)
+		res := ldap.NewResponse(constants.LDAPResultUnwillingToPerform)
 		res.SetDiagnosticMessage("Operation not implemented by server")
 		w.Write(res)
 	}
 }
 
-func (h *Handler) Abandon(w ls.ResponseWriter, m *ls.Message) {
+// Abandon tries to Abandon the given request
+func (h *Handler) Abandon(w ldap.ResponseWriter, m *ldap.Request) {
 	var req = m.GetAbandonRequest()
 	// retreive the request to abandon, and send a abort signal to it
-	if requestToAbandon, ok := m.Client.GetMessageByID(int(req)); ok {
+	if requestToAbandon, ok := m.Conn.GetMessageByID(int(req)); ok {
 		requestToAbandon.Abandon()
 		log.Infof("Abandon signal sent to request processor [messageID=%d]", int(req))
 	}
 }
 
-func (h *Handler) Bind(w ls.ResponseWriter, m *ls.Message) {
+// Bind authenticates using user and password
+// the password is taken from a `userpassword` property, which is non standard
+func (h *Handler) Bind(w ldap.ResponseWriter, m *ldap.Request) {
 	r := m.GetBindRequest()
-	res := ls.NewBindResponse(ls.LDAPResultSuccess)
+	res := ldap.NewBindResponse(constants.LDAPResultSuccess)
 	if r.AuthenticationChoice() == "simple" {
 		password := h.data.Search(string(r.Name()), "userpassword").Data()
 		log.Debugf("User=%s, password=%v", string(r.Name()), password)
@@ -53,30 +59,32 @@ func (h *Handler) Bind(w ls.ResponseWriter, m *ls.Message) {
 			return
 		}
 		log.Debugf("Bind failed User=%s, Pass=%#v", string(r.Name()), r.Authentication())
-		res.SetResultCode(ls.LDAPResultInvalidCredentials)
+		res.SetResultCode(constants.LDAPResultInvalidCredentials)
 		res.SetDiagnosticMessage("invalid credentials")
 	} else {
-		res.SetResultCode(ls.LDAPResultUnwillingToPerform)
+		res.SetResultCode(constants.LDAPResultUnwillingToPerform)
 		res.SetDiagnosticMessage("Authentication choice not supported")
 	}
 
 	w.Write(res)
 }
 
-func (h *Handler) Extended(w ls.ResponseWriter, m *ls.Message) {
+// Extended handles extended requests
+func (h *Handler) Extended(w ldap.ResponseWriter, m *ldap.Request) {
 	r := m.GetExtendedRequest()
 	log.Debugf("Extended request received, name=%s", r.RequestName())
 	log.Debugf("Extended request received, value=%x", r.RequestValue())
-	res := ls.NewExtendedResponse(ls.LDAPResultSuccess)
+	res := ldap.NewExtendedResponse(constants.LDAPResultSuccess)
 	w.Write(res)
 }
 
-func (h *Handler) WhoAmI(w ls.ResponseWriter, m *ls.Message) {
-	res := ls.NewExtendedResponse(ls.LDAPResultSuccess)
+// WhoAmI TODO return the currently logged in user
+func (h *Handler) WhoAmI(w ldap.ResponseWriter, m *ldap.Request) {
+	res := ldap.NewExtendedResponse(constants.LDAPResultSuccess)
 	w.Write(res)
 }
 
-type SearchControlValue struct {
+type searchControlValue struct {
 	Size   int
 	Cookie string
 }
@@ -100,7 +108,8 @@ func addAttributeValue(e *message.SearchResultEntry, attribute message.LDAPStrin
 	e.AddAttribute(message.AttributeDescription(attribute), attributeValues...)
 }
 
-func (h *Handler) Search(w ls.ResponseWriter, m *ls.Message) {
+// Search looks up nodes and attributes in the tree
+func (h *Handler) Search(w ldap.ResponseWriter, m *ldap.Request) {
 	r := m.GetSearchRequest()
 	log.Debugf("Request BaseDn=%s", r.BaseObject())
 	log.Debugf("Request Filter=%s", r.Filter())
@@ -120,7 +129,7 @@ func (h *Handler) Search(w ls.ResponseWriter, m *ls.Message) {
 	if m.Controls() != nil {
 		for _, control := range *m.Controls() {
 			if control.ControlType() == "1.2.840.113556.1.4.319" {
-				var controlValue SearchControlValue
+				var controlValue searchControlValue
 				/*rest, err := */ asn1.Unmarshal(control.ControlValue().Bytes(), &controlValue)
 				log.Debugf("Paged search request %+v", controlValue)
 				// TODO implement paged search
@@ -134,7 +143,7 @@ func (h *Handler) Search(w ls.ResponseWriter, m *ls.Message) {
 			log.Debugf("checking node: %v\n", key)
 			if matches(child, r.Filter()) {
 				log.Debugf("found match %v\n", child)
-				e := ls.NewSearchResultEntry(key)
+				e := ldap.NewSearchResultEntry(key)
 				for _, ldapAttribute := range r.Attributes() {
 					attribute := strings.ToLower(string(ldapAttribute))
 					if attribute == "dn" {
@@ -165,7 +174,7 @@ func (h *Handler) Search(w ls.ResponseWriter, m *ls.Message) {
 		}
 	}
 
-	res := ls.NewSearchResultDoneResponse(ls.LDAPResultSuccess)
+	res := ldap.NewSearchResultDoneResponse(constants.LDAPResultSuccess)
 	w.Write(res)
 
 }
