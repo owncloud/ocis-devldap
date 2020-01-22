@@ -117,15 +117,36 @@ func ServerWithConfig(cfg *config.Config) []cli.Flag {
 			Name:        "ldap-addr",
 			Value:       "0.0.0.0:9125",
 			Usage:       "Address to bind ldap server",
-			EnvVar:      "DEVLDAP_HTTP_ADDR",
+			EnvVar:      "DEVLDAP_LDAP_ADDR",
 			Destination: &cfg.LDAP.Addr,
+		},
+		&cli.StringFlag{
+			Name:        "ldaps-addr",
+			Value:       "0.0.0.0:9126",
+			Usage:       "Address to bind ldaps server",
+			EnvVar:      "DEVLDAP_LDAPS_ADDR",
+			Destination: &cfg.LDAP.TLSAddr,
 		},
 		&cli.StringFlag{
 			Name:        "ldap-data",
 			Value:       "data.json",
 			Usage:       "Path to ldap data file",
 			EnvVar:      "DEVLDAP_LDAP_DATA",
-			Destination: &cfg.LDAP.Data,
+			Destination: &cfg.Asset.Data,
+		},
+		&cli.StringFlag{
+			Name:        "ldap-crt",
+			Value:       "localhost.crt",
+			Usage:       "Path to ldap certificate file in PEM format",
+			EnvVar:      "DEVLDAP_LDAP_CRT",
+			Destination: &cfg.Asset.Crt,
+		},
+		&cli.StringFlag{
+			Name:        "ldap-key",
+			Value:       "localhost.key",
+			Usage:       "Path to ldap certificate key file in PEM format",
+			EnvVar:      "DEVLDAP_LDAP_KEY",
+			Destination: &cfg.Asset.Key,
 		},
 	}
 }

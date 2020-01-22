@@ -17,8 +17,8 @@ type Debug struct {
 
 // LDAP defines the available ldap configuration.
 type LDAP struct {
-	Addr string
-	Data string
+	Addr    string
+	TLSAddr string
 }
 
 // Tracing defines the available tracing configuration.
@@ -33,6 +33,9 @@ type Tracing struct {
 // Asset defines the available asset configuration.
 type Asset struct {
 	Path string
+	Data string
+	Crt  string
+	Key  string
 }
 
 // Config combines all available configuration parts.
@@ -41,8 +44,8 @@ type Config struct {
 	Log     Log
 	Debug   Debug
 	LDAP    LDAP
-	Tracing Tracing
 	Asset   Asset
+	Tracing Tracing
 }
 
 // New initializes a new configuration with or without defaults.

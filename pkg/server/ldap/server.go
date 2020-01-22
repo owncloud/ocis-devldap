@@ -3,32 +3,22 @@ package ldap
 import (
 	"time"
 
-	"github.com/Jeffail/gabs"
 	"github.com/butonic/ldapserver/pkg/constants"
 	"github.com/butonic/ldapserver/pkg/ldap"
 	"github.com/butonic/zerologr"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-plugins/wrapper/monitoring/prometheus"
 	"github.com/micro/go-plugins/wrapper/trace/opencensus"
-	"github.com/owncloud/ocis-devldap/pkg/assets"
 	"github.com/owncloud/ocis-devldap/pkg/version"
 )
 
 // Server initializes the ldap service and server.
 func Server(opts ...Option) (*ldap.Server, error) {
 	options := newOptions(opts...)
-	options.Logger.Info().Str("addr", options.Config.LDAP.Addr).Msg("Server listening on")
-
-	// &cli.StringFlag{
-	// 	Name:        "ldap-addr",
-	// 	Value:       "0.0.0.0:9125",
-	// 	Usage:       "Address to bind ldap server",
-	// 	EnvVar:      "DEVLDAP_LDAP_ADDR",
-	// 	Destination: &cfg.LDAP.Addr,
-	// },
+	options.Logger.Info().Str("addr", options.Addr).Msg("Server listening on")
 
 	service := micro.NewService(
-		micro.Name("com.owncloud.ocis.devldap"),
+		micro.Name(options.Name),
 		micro.Version(version.String),
 		micro.WrapHandler(prometheus.NewHandlerWrapper()),
 		micro.WrapClient(opencensus.NewClientWrapper()),
@@ -41,33 +31,21 @@ func Server(opts ...Option) (*ldap.Server, error) {
 
 	service.Init()
 
-	a := assets.New(
-		assets.Config(options.Config),
-	)
-	d, err := a.Open(options.Config.LDAP.Data)
-	if err != nil {
-		return nil, err
-	}
-
-	data, err := gabs.ParseJSONBuffer(d)
-	if err != nil {
-		return nil, err
-	}
-
 	zlog := zerologr.NewWithOptions(
 		zerologr.Options{
-			Name:   "devldap",
+			Name:   options.Name,
 			Logger: &options.Logger.Logger,
 		},
 	)
 
 	//Create a new LDAP Server
 	server := ldap.NewServer(
-		ldap.Addr(options.Config.LDAP.Addr),
+		ldap.Addr(options.Addr),
+		ldap.TLSConfig(options.TLSConfig),
 		ldap.Logger(zlog),
 	)
 	h := &Handler{
-		data: data,
+		data: options.Data,
 	}
 
 	//Create routes bindings
