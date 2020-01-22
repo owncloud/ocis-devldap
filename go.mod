@@ -5,7 +5,8 @@ require (
 	contrib.go.opencensus.io/exporter/ocagent v0.6.0
 	contrib.go.opencensus.io/exporter/zipkin v0.1.1
 	github.com/Jeffail/gabs v1.4.0
-	github.com/butonic/ldapserver v0.0.0-20191209092749-8fb2e7a4a628
+	github.com/UnnoTed/fileb0x v1.1.4 // indirect
+	github.com/butonic/ldapserver v0.0.0-20200121204327-1a8d2dc7e5dc
 	github.com/butonic/zerologr v0.0.0-20191210074216-d798ee237d84
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/coreos/etcd v3.3.18+incompatible // indirect
@@ -21,19 +22,19 @@ require (
 	github.com/oklog/run v1.0.0
 	github.com/onsi/ginkgo v1.10.3 // indirect
 	github.com/openzipkin/zipkin-go v0.2.2
-	github.com/owncloud/ocis-pkg v1.1.0
+	github.com/owncloud/ocis-pkg v1.2.0
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/prometheus/client_model v0.0.0-20191202183732-d1d2010b5bee // indirect
 	github.com/prometheus/procfs v0.0.8 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/spf13/viper v1.5.0
+	github.com/spf13/viper v1.6.1
 	github.com/uber/jaeger-client-go v2.20.1+incompatible // indirect
 	go.opencensus.io v0.22.2
 	go.uber.org/atomic v1.5.1 // indirect
 	go.uber.org/multierr v1.4.0 // indirect
 	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd // indirect
 	golang.org/x/lint v0.0.0-20191125180803-fdd1cda4f05f // indirect
-	golang.org/x/net v0.0.0-20191204025024-5ee1b9f4859a
+	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
 	golang.org/x/sys v0.0.0-20191204072324-ce4227a45e2e // indirect
 	golang.org/x/tools v0.0.0-20191205225056-3393d29bb9fe // indirect
 	google.golang.org/api v0.14.0 // indirect

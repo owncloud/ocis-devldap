@@ -2,8 +2,9 @@ package ldap
 
 import (
 	"context"
+	"crypto/tls"
 
-	"github.com/owncloud/ocis-devldap/pkg/config"
+	"github.com/Jeffail/gabs"
 	"github.com/owncloud/ocis-pkg/log"
 )
 
@@ -12,9 +13,12 @@ type Option func(o *Options)
 
 // Options defines the available options for this package.
 type Options struct {
-	Logger  log.Logger
-	Context context.Context
-	Config  *config.Config
+	Logger    log.Logger
+	Context   context.Context
+	Name      string
+	Addr      string
+	TLSConfig *tls.Config
+	Data      *gabs.Container
 }
 
 // newOptions initializes the available default options.
@@ -42,9 +46,30 @@ func Context(val context.Context) Option {
 	}
 }
 
-// Config provides a function to set the config option.
-func Config(val *config.Config) Option {
+// Name provides a function to set the name option.
+func Name(val string) Option {
 	return func(o *Options) {
-		o.Config = val
+		o.Name = val
+	}
+}
+
+// Addr provides a function to set the addr option.
+func Addr(val string) Option {
+	return func(o *Options) {
+		o.Addr = val
+	}
+}
+
+// TLSConfig provides a function to set the TLSConfig option.
+func TLSConfig(val *tls.Config) Option {
+	return func(o *Options) {
+		o.TLSConfig = val
+	}
+}
+
+// Data provides a function to set the data option.
+func Data(val *gabs.Container) Option {
+	return func(o *Options) {
+		o.Data = val
 	}
 }
