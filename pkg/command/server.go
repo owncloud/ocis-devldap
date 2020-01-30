@@ -139,7 +139,14 @@ func Server(cfg *config.Config) cli.Command {
 				}
 
 				gr.Add(func() error {
-					return server.ListenAndServe()
+					err :=  server.ListenAndServe()
+					if err != nil {
+						logger.Info().
+							Err(err).
+							Str("transport", "ldap").
+							Msg("Failed to start ldap server")
+					}
+					return err
 				}, func(_ error) {
 					ctx, timeout := context.WithTimeout(ctx, 5*time.Second)
 					defer timeout()
