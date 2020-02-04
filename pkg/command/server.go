@@ -2,6 +2,8 @@ package command
 
 import (
 	"context"
+	"crypto/tls"
+	"io/ioutil"
 	"os"
 	"os/signal"
 	"time"
@@ -9,10 +11,12 @@ import (
 	"contrib.go.opencensus.io/exporter/jaeger"
 	"contrib.go.opencensus.io/exporter/ocagent"
 	"contrib.go.opencensus.io/exporter/zipkin"
+	"github.com/Jeffail/gabs"
 	"github.com/micro/cli"
 	"github.com/oklog/run"
 	openzipkin "github.com/openzipkin/zipkin-go"
 	zipkinhttp "github.com/openzipkin/zipkin-go/reporter/http"
+	"github.com/owncloud/ocis-devldap/pkg/assets"
 	"github.com/owncloud/ocis-devldap/pkg/config"
 	"github.com/owncloud/ocis-devldap/pkg/flagset"
 	"github.com/owncloud/ocis-devldap/pkg/server/debug"
@@ -122,11 +126,28 @@ func Server(cfg *config.Config) cli.Command {
 
 			defer cancel()
 
+			a := assets.New(assets.Config(cfg))
+
+			// load the data from the assets
+
+			d, err := a.Open(cfg.Asset.Data)
+			if err != nil {
+				return err
+			}
+			defer d.Close()
+
+			data, err := gabs.ParseJSONBuffer(d)
+			if err != nil {
+				return err
+			}
+
 			{
 				server, err := ldap.Server(
 					ldap.Logger(logger),
 					ldap.Context(ctx),
-					ldap.Config(cfg),
+					ldap.Addr(cfg.LDAP.Addr),
+					ldap.Data(data),
+					ldap.Name("com.owncloud.ocis.devldap"),
 				)
 
 				if err != nil {
@@ -154,6 +175,71 @@ func Server(cfg *config.Config) cli.Command {
 
 					logger.Info().
 						Str("transport", "ldap").
+						Msg("Shutting down server")
+
+					server.Shutdown(ctx)
+				})
+			}
+
+			// load certificate
+			crt, err := a.Open(cfg.Asset.Crt)
+			if err != nil {
+				return err
+			}
+			defer crt.Close()
+
+			certPem, err := ioutil.ReadAll(crt)
+			if err != nil {
+				return err
+			}
+
+			key, err := a.Open(cfg.Asset.Key)
+			if err != nil {
+				return err
+			}
+			defer key.Close()
+
+			keyPem, err := ioutil.ReadAll(key)
+			if err != nil {
+				return err
+			}
+			cert, err := tls.X509KeyPair(certPem, keyPem)
+			if err != nil {
+				return err
+			}
+
+			tlsConfig := tls.Config{
+				Certificates: []tls.Certificate{cert},
+			}
+
+			{
+				server, err := ldap.Server(
+					ldap.Logger(logger),
+					ldap.Context(ctx),
+					ldap.Addr(cfg.LDAP.TLSAddr),
+					ldap.Data(data),
+					ldap.TLSConfig(&tlsConfig),
+					ldap.Name("com.owncloud.ocis.devldaps"),
+				)
+
+				if err != nil {
+					logger.Info().
+						Err(err).
+						Str("transport", "ldaps").
+						Msg("Failed to initialize server")
+
+					return err
+				}
+
+				gr.Add(func() error {
+					return server.ListenAndServeTLS()
+				}, func(_ error) {
+					ctx, timeout := context.WithTimeout(ctx, 5*time.Second)
+					defer timeout()
+					defer cancel()
+
+					logger.Info().
+						Str("transport", "ldaps").
 						Msg("Shutting down server")
 
 					server.Shutdown(ctx)
