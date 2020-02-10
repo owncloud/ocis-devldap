@@ -6,7 +6,7 @@ import (
 
 	"github.com/Jeffail/gabs"
 	"github.com/lor00x/goldap/message"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/util/log"
 )
 
 func matchesFilterAnd(node *gabs.Container, f message.FilterAnd) bool {

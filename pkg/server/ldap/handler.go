@@ -9,7 +9,7 @@ import (
 	"github.com/butonic/ldapserver/pkg/constants"
 	"github.com/butonic/ldapserver/pkg/ldap"
 	"github.com/lor00x/goldap/message"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/util/log"
 )
 
 // Handler implements the handlers for LDAP Requests
