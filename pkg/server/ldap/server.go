@@ -7,9 +7,9 @@ import (
 	"github.com/butonic/ldapserver/pkg/constants"
 	"github.com/butonic/ldapserver/pkg/ldap"
 	"github.com/butonic/zerologr"
-	"github.com/micro/go-micro"
-	"github.com/micro/go-plugins/wrapper/monitoring/prometheus"
-	"github.com/micro/go-plugins/wrapper/trace/opencensus"
+	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-plugins/wrapper/monitoring/prometheus/v2"
+	"github.com/micro/go-plugins/wrapper/trace/opencensus/v2"
 	"github.com/owncloud/ocis-devldap/pkg/assets"
 	"github.com/owncloud/ocis-devldap/pkg/version"
 )
