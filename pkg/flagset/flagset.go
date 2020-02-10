@@ -1,7 +1,7 @@
 package flagset
 
 import (
-	"github.com/micro/cli"
+	"github.com/micro/cli/v2"
 	"github.com/owncloud/ocis-devldap/pkg/config"
 )
 
@@ -12,26 +12,28 @@ func RootWithConfig(cfg *config.Config) []cli.Flag {
 			Name:        "config-file",
 			Value:       "",
 			Usage:       "Path to config file",
-			EnvVar:      "DEVLDAP_CONFIG_FILE",
+			EnvVars:     []string{"DEVLDAP_CONFIG_FILE"},
 			Destination: &cfg.File,
 		},
 		&cli.StringFlag{
 			Name:        "log-level",
 			Value:       "info",
 			Usage:       "Set logging level",
-			EnvVar:      "DEVLDAP_LOG_LEVEL",
+			EnvVars:     []string{"DEVLDAP_LOG_LEVEL"},
 			Destination: &cfg.Log.Level,
 		},
-		&cli.BoolTFlag{
+		&cli.BoolFlag{
+			Value:       true,
 			Name:        "log-pretty",
 			Usage:       "Enable pretty logging",
-			EnvVar:      "DEVLDAP_LOG_PRETTY",
+			EnvVars:     []string{"DEVLDAP_LOG_PRETTY"},
 			Destination: &cfg.Log.Pretty,
 		},
-		&cli.BoolTFlag{
+		&cli.BoolFlag{
+			Value:       true,
 			Name:        "log-color",
 			Usage:       "Enable colored logging",
-			EnvVar:      "DEVLDAP_LOG_COLOR",
+			EnvVars:     []string{"DEVLDAP_LOG_COLOR"},
 			Destination: &cfg.Log.Color,
 		},
 	}
@@ -44,7 +46,7 @@ func HealthWithConfig(cfg *config.Config) []cli.Flag {
 			Name:        "debug-addr",
 			Value:       "0.0.0.0:9129",
 			Usage:       "Address to debug endpoint",
-			EnvVar:      "DEVLDAP_DEBUG_ADDR",
+			EnvVars:     []string{"DEVLDAP_DEBUG_ADDR"},
 			Destination: &cfg.Debug.Addr,
 		},
 	}
@@ -56,75 +58,75 @@ func ServerWithConfig(cfg *config.Config) []cli.Flag {
 		&cli.BoolFlag{
 			Name:        "tracing-enabled",
 			Usage:       "Enable sending traces",
-			EnvVar:      "DEVLDAP_TRACING_ENABLED",
+			EnvVars:     []string{"DEVLDAP_TRACING_ENABLED"},
 			Destination: &cfg.Tracing.Enabled,
 		},
 		&cli.StringFlag{
 			Name:        "tracing-type",
 			Value:       "jaeger",
 			Usage:       "Tracing backend type",
-			EnvVar:      "DEVLDAP_TRACING_TYPE",
+			EnvVars:     []string{"DEVLDAP_TRACING_TYPE"},
 			Destination: &cfg.Tracing.Type,
 		},
 		&cli.StringFlag{
 			Name:        "tracing-endpoint",
 			Value:       "",
 			Usage:       "Endpoint for the agent",
-			EnvVar:      "DEVLDAP_TRACING_ENDPOINT",
+			EnvVars:     []string{"DEVLDAP_TRACING_ENDPOINT"},
 			Destination: &cfg.Tracing.Endpoint,
 		},
 		&cli.StringFlag{
 			Name:        "tracing-collector",
 			Value:       "",
 			Usage:       "Endpoint for the collector",
-			EnvVar:      "DEVLDAP_TRACING_COLLECTOR",
+			EnvVars:     []string{"DEVLDAP_TRACING_COLLECTOR"},
 			Destination: &cfg.Tracing.Collector,
 		},
 		&cli.StringFlag{
 			Name:        "tracing-service",
 			Value:       "devldap",
 			Usage:       "Service name for tracing",
-			EnvVar:      "DEVLDAP_TRACING_SERVICE",
+			EnvVars:     []string{"DEVLDAP_TRACING_SERVICE"},
 			Destination: &cfg.Tracing.Service,
 		},
 		&cli.StringFlag{
 			Name:        "debug-addr",
 			Value:       "0.0.0.0:9129",
 			Usage:       "Address to bind debug server",
-			EnvVar:      "DEVLDAP_DEBUG_ADDR",
+			EnvVars:     []string{"DEVLDAP_DEBUG_ADDR"},
 			Destination: &cfg.Debug.Addr,
 		},
 		&cli.StringFlag{
 			Name:        "debug-token",
 			Value:       "",
 			Usage:       "Token to grant metrics access",
-			EnvVar:      "DEVLDAP_DEBUG_TOKEN",
+			EnvVars:     []string{"DEVLDAP_DEBUG_TOKEN"},
 			Destination: &cfg.Debug.Token,
 		},
 		&cli.BoolFlag{
 			Name:        "debug-pprof",
 			Usage:       "Enable pprof debugging",
-			EnvVar:      "DEVLDAP_DEBUG_PPROF",
+			EnvVars:     []string{"DEVLDAP_DEBUG_PPROF"},
 			Destination: &cfg.Debug.Pprof,
 		},
 		&cli.BoolFlag{
 			Name:        "debug-zpages",
 			Usage:       "Enable zpages debugging",
-			EnvVar:      "DEVLDAP_DEBUG_ZPAGES",
+			EnvVars:     []string{"DEVLDAP_DEBUG_ZPAGES"},
 			Destination: &cfg.Debug.Zpages,
 		},
 		&cli.StringFlag{
 			Name:        "ldap-addr",
 			Value:       "0.0.0.0:9125",
 			Usage:       "Address to bind ldap server",
-			EnvVar:      "DEVLDAP_HTTP_ADDR",
+			EnvVars:     []string{"DEVLDAP_HTTP_ADDR"},
 			Destination: &cfg.LDAP.Addr,
 		},
 		&cli.StringFlag{
 			Name:        "ldap-data",
 			Value:       "data.json",
 			Usage:       "Path to ldap data file",
-			EnvVar:      "DEVLDAP_LDAP_DATA",
+			EnvVars:     []string{"DEVLDAP_LDAP_DATA"},
 			Destination: &cfg.LDAP.Data,
 		},
 	}
