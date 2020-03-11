@@ -26,6 +26,11 @@ make generate build
 ./bin/ocis-devldap -h
 ```
 
+### Updating demo users
+
+The demo users can be found in `assets/data.json`.
+After editing the file, please also run `make generate` to embed them into the binary.
+
 ## Security
 
 If you find a security issue please contact security@owncloud.com first.
